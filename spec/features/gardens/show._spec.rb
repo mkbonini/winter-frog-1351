@@ -26,4 +26,31 @@ RSpec.describe 'garden show page' do
             expect(page).to_not have_content("apple")
         end
     end
+
+    it 'lists plants from most planted to least' do
+        turing_garden = Garden.create!(name: 'Turing Community Garden', organic: true)
+
+        plot_1 = turing_garden.plots.create!(number: 25, size: "Large", direction: "East")
+        plot_2 = turing_garden.plots.create!(number: 26, size: "Small", direction: "West")
+        plot_3 = turing_garden.plots.create!(number: 27, size: "Small", direction: "east north-east")
+
+        plant_3 = Plant.create!(name: 'carrot', description: 'an orange veg', days_to_harvest: 30)
+        plant_2 = Plant.create!(name: 'peach', description: 'a tasty fruit', days_to_harvest: 50)
+        plant_1 = Plant.create!(name: 'squash', description: 'a tasty veg', days_to_harvest: 25)
+        
+
+        PlotPlant.create!(plot: plot_1, plant: plant_1)
+        PlotPlant.create!(plot: plot_1, plant: plant_2)
+        PlotPlant.create!(plot: plot_2, plant: plant_1)
+        PlotPlant.create!(plot: plot_2, plant: plant_2)
+        PlotPlant.create!(plot: plot_3, plant: plant_1)
+        PlotPlant.create!(plot: plot_3, plant: plant_3)
+
+        visit garden_path(turing_garden)
+
+        within "#plant-list" do
+            expect('squash').to appear_before('peach')
+            expect('peach').to appear_before('carrot')
+        end
+    end
 end

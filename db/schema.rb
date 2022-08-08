@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_22_133732) do
+ActiveRecord::Schema.define(version: 2022_08_08_151232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,23 @@ ActiveRecord::Schema.define(version: 2021_09_22_133732) do
     t.boolean "organic"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "plants", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.integer "days_to_harvest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plot_plants", force: :cascade do |t|
+    t.bigint "plots_id"
+    t.bigint "plants_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["plants_id"], name: "index_plot_plants_on_plants_id"
+    t.index ["plots_id"], name: "index_plot_plants_on_plots_id"
   end
 
   create_table "plots", force: :cascade do |t|
@@ -32,5 +49,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_133732) do
     t.index ["garden_id"], name: "index_plots_on_garden_id"
   end
 
+  add_foreign_key "plot_plants", "plants", column: "plants_id"
+  add_foreign_key "plot_plants", "plots", column: "plots_id"
   add_foreign_key "plots", "gardens"
 end

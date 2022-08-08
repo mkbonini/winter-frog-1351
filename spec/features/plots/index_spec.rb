@@ -20,9 +20,9 @@ RSpec.describe 'plots index page' do
         plant_2 = Plant.create!(name: 'peach', description: 'a tasty fruit', days_to_harvest: 50)
         plant_3 = Plant.create!(name: 'carrot', description: 'an orange veg', days_to_harvest: 125)
 
-        PlotPlants.create!(plot: plot_1, plant: plant_1)
-        PlotPlants.create!(plot: plot_1, plant: plant_2)
-        PlotPlants.create!(plot: plot_2, plant: plant_1)
+        PlotPlant.create!(plot: plot_1, plant: plant_1)
+        PlotPlant.create!(plot: plot_1, plant: plant_2)
+        PlotPlant.create!(plot: plot_2, plant: plant_1)
 
         visit plots_path
 
@@ -33,12 +33,12 @@ RSpec.describe 'plots index page' do
             expect(page).to have_content("Plot Number: 738")
         end
 
-        within "#plot25_plants" do
+        within "#plot25-plants" do
             expect(page).to have_content("squash")
             expect(page).to have_content("peach")
         end
 
-        within "#plot26_plants" do
+        within "#plot26-plants" do
             expect(page).to have_content("squash")
         end
 

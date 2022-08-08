@@ -39,22 +39,16 @@ RSpec.describe 'plots index page' do
 
         expect(page).to_not have_content("carrot")
     end
-# User Story 2, Remove a Plant from a Plot
-# As a visitor
-# When I visit a plot's index page
-# Next to each plant's name
-# I see a link to remove that plant from that plot
-# When I click on that link
-# I'm returned to the plots index page
-# And I no longer see that plant listed under that plot
-# (Note: you should not destroy the plant record entirely)
+
     it 'has a link to remove a plant from plot' do
         turing_garden = Garden.create!(name: 'Turing Community Garden', organic: true)
         plot_1 = turing_garden.plots.create!(number: 25, size: "Large", direction: "East")
+        plot_2 = turing_garden.plots.create!(number: 26, size: "Small", direction: "West")
         plant_1 = Plant.create!(name: 'squash', description: 'a tasty veg', days_to_harvest: 25)
         plant_2 = Plant.create!(name: 'peach', description: 'a tasty fruit', days_to_harvest: 50)
         PlotPlant.create!(plot: plot_1, plant: plant_1)
         PlotPlant.create!(plot: plot_1, plant: plant_2)
+        PlotPlant.create!(plot: plot_2, plant: plant_1)
 
         visit plots_path
 
@@ -62,6 +56,11 @@ RSpec.describe 'plots index page' do
             first(:link, "Remove From Plot").click
             expect(page).to have_content("peach")
             expect(page).to_not have_content("squash")
+        end
+
+
+        within "#plot26-plants" do
+            expect(page).to have_content("squash")
         end
     end
 end

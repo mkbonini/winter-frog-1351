@@ -1,11 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'plots index page' do
-# User Story 1, Plots Index Page
-# As a visitor
-# When I visit the plots index page ('/plots')
-# I see a list of all plot numbers
-# And under each plot number I see names of all that plot's plants
     it 'displays all the plots with their plants' do
         turing_garden = Garden.create!(name: 'Turing Community Garden', organic: true)
         library_garden = Garden.create!(name: 'Public Library Garden', organic: true)
@@ -43,5 +38,30 @@ RSpec.describe 'plots index page' do
         end
 
         expect(page).to_not have_content("carrot")
+    end
+# User Story 2, Remove a Plant from a Plot
+# As a visitor
+# When I visit a plot's index page
+# Next to each plant's name
+# I see a link to remove that plant from that plot
+# When I click on that link
+# I'm returned to the plots index page
+# And I no longer see that plant listed under that plot
+# (Note: you should not destroy the plant record entirely)
+    it 'has a link to remove a plant from plot' do
+        turing_garden = Garden.create!(name: 'Turing Community Garden', organic: true)
+        plot_1 = turing_garden.plots.create!(number: 25, size: "Large", direction: "East")
+        plant_1 = Plant.create!(name: 'squash', description: 'a tasty veg', days_to_harvest: 25)
+        plant_2 = Plant.create!(name: 'peach', description: 'a tasty fruit', days_to_harvest: 50)
+        PlotPlant.create!(plot: plot_1, plant: plant_1)
+        PlotPlant.create!(plot: plot_1, plant: plant_2)
+
+        visit plots_path
+
+        within "#plot25-plants" do
+            first(:link, "Remove From Plot").click
+            expect(page).to have_content("peach")
+            expect(page).to_not have_content("squash")
+        end
     end
 end
